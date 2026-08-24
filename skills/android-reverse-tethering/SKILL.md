@@ -45,6 +45,11 @@ If a tool is missing, install it first (or guide the user through installing it)
    gnirehtet run
    ```
 
+   The relay must keep running for tethering to stay up — it dies with the
+   shell/session that owns it, which leaves the phone's VPN up with no
+   internet. If the session will end while tethering should continue, tell
+   the user to run `gnirehtet run` in their own terminal instead.
+
    On first use this automatically installs the gnirehtet client APK on the
    phone (`Performing Streamed Install` / `Success` in the output) and the
    phone shows a **VPN connection request popup once** — tell the user to
