@@ -19,7 +19,7 @@ Codex CLI 등 오픈 스킬 표준을 지원하는 모든 AI 코딩 에이전트
 
 ```
 /plugin marketplace add pchuri/agent-skills
-/plugin install android-reverse-tethering@agent-skills
+/plugin install android-reverse-tethering@pchuri-skills
 ```
 
 ### OpenAI Codex CLI
