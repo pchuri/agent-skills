@@ -1,0 +1,14 @@
+{
+  "name": "android-reverse-tethering",
+  "displayName": "Android Reverse Tethering",
+  "description": "Share the PC's internet with an Android phone over USB (reverse tethering via gnirehtet) — setup, start/stop, verification, and troubleshooting.",
+  "version": "1.0.0",
+  "author": {
+    "name": "pchuri",
+    "url": "https://github.com/pchuri"
+  },
+  "homepage": "https://github.com/pchuri/agent-skills",
+  "repository": "https://github.com/pchuri/agent-skills",
+  "license": "MIT",
+  "keywords": ["android", "reverse-tethering", "gnirehtet", "adb", "usb", "networking"]
+}

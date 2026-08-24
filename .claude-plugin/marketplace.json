@@ -1,0 +1,19 @@
+{
+  "name": "agent-skills",
+  "description": "Portable Agent Skills (SKILL.md) for AI coding agents — Claude Code, Codex CLI, and other tools supporting the open skills standard.",
+  "owner": {
+    "name": "pchuri",
+    "url": "https://github.com/pchuri"
+  },
+  "plugins": [
+    {
+      "name": "android-reverse-tethering",
+      "source": "./",
+      "description": "Share the PC's internet with an Android phone over USB (reverse tethering via gnirehtet) — setup, start/stop, verification, and troubleshooting.",
+      "version": "1.0.0",
+      "author": {
+        "name": "pchuri"
+      }
+    }
+  ]
+}
