@@ -1,0 +1,14 @@
+{
+  "name": "samsung-messages-adb",
+  "displayName": "Samsung Messages over adb",
+  "description": "Read and search text messages on a Samsung Galaxy over adb — SMS, MMS, and RCS (Chat+) — with the store-split and timestamp-unit gotchas that make messages 'invisible' to naive queries.",
+  "version": "1.0.0",
+  "author": {
+    "name": "pchuri",
+    "url": "https://github.com/pchuri"
+  },
+  "homepage": "https://github.com/pchuri/agent-skills",
+  "repository": "https://github.com/pchuri/agent-skills",
+  "license": "MIT",
+  "keywords": ["android", "samsung", "messages", "sms", "mms", "rcs", "adb"]
+}

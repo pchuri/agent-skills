@@ -8,8 +8,17 @@
   "plugins": [
     {
       "name": "android-reverse-tethering",
-      "source": "./",
+      "source": "./plugins/android-reverse-tethering",
       "description": "Share the PC's internet with an Android phone over USB (reverse tethering via gnirehtet) — setup, start/stop, verification, and troubleshooting.",
+      "version": "1.0.0",
+      "author": {
+        "name": "pchuri"
+      }
+    },
+    {
+      "name": "samsung-messages-adb",
+      "source": "./plugins/samsung-messages-adb",
+      "description": "Read and search text messages on a Samsung Galaxy over adb — SMS, MMS, and RCS (Chat+) — with the store-split and timestamp-unit gotchas that make messages 'invisible' to naive queries.",
       "version": "1.0.0",
       "author": {
         "name": "pchuri"
