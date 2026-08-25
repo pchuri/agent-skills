@@ -23,6 +23,17 @@
       "author": {
         "name": "pchuri"
       }
+    },
+    {
+      "name": "watchtell",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/pchuri/watchtell.git"
+      },
+      "description": "Hand off long-lived watching to the watchtell daemon — describe an alarm in plain language, get a deterministic checker that polls LLM-free and fires only on state transitions. Requires the watchtell CLI (npm i -g watchtell).",
+      "author": {
+        "name": "pchuri"
+      }
     }
   ]
 }
