@@ -1,6 +1,6 @@
 ---
 name: samsung-messages-adb
-description: Read and search text messages on a Samsung Galaxy (Android) phone from a computer using adb — SMS, MMS (long/picture messages), and RCS chats (Samsung 채팅+) — plus call recordings and screenshots. Use when the user asks to find, read, export, or analyze phone text messages (문자/채팅+) via adb, or when a message visible in the Samsung Messages app doesn't show up in a content query.
+description: Read, search, and send text messages on a Samsung Galaxy (Android) phone from a computer using adb — SMS, MMS (long/picture messages), and RCS chats (Samsung 채팅+) — plus call recordings and screenshots. Use when the user asks to find, read, export, or analyze phone text messages (문자/채팅+) via adb, when a message visible in the Samsung Messages app doesn't show up in a content query, or when they want to send a message from the computer.
 ---
 
 # Samsung Messages over adb (SMS · MMS · RCS)
@@ -115,6 +115,69 @@ python3 -c "import datetime; print(datetime.datetime.fromtimestamp(1787380060))"
 python3 -c "import datetime; print(datetime.datetime.fromtimestamp(1787380060045/1000))"  # SMS/RCS (ms)
 ```
 
+## Sending a message (draft by intent, send by UI tap)
+
+There is no clean adb path that puts a message on the air. Two routes that
+look like they should work are dead ends:
+
+- **`content insert` into `content://sms`** writes a row into the phone's
+  local database. That fabricates a "sent" record with no radio traffic at
+  all, and recent Android blocks writes from anything but the default SMS
+  app anyway.
+- **`service call isms <txn> ...`** — the telephony binder is present
+  (`service list | grep isms`), but the transaction numbers move between
+  Android versions, arguments have to be marshalled into a Parcel by hand,
+  and since Android 10 the shell UID has no `SEND_SMS`, so the call dies
+  with a SecurityException.
+
+What works is two steps: hand the text to the Messages app with an intent,
+then press its Send button through UI automation.
+
+### 1. Prefill the draft — reversible, nothing is sent
+
+```sh
+adb shell am start -a android.intent.action.SENDTO \
+  -d "sms:01012345678" --es sms_body "\"message text\"" --ez exit_on_sent true
+```
+
+Opens the compose screen with recipient and body filled in and stops there.
+`exit_on_sent` closes the app once a send completes.
+
+**The escaped quotes on `sms_body` are required**, for the same reason as
+[Quoting](#quoting) above: `adb shell` joins its arguments with spaces and
+re-parses them on the device, so a plain `"message text"` arrives as two
+separate arguments and only the first word becomes the body. Verify with
+`adb shell printf '[%s]\n' --es sms_body "\"a b\""`.
+
+### 2. Find the Send button, then tap it
+
+Eyeballing coordinates lands taps on the wrong control. Dump the live view
+hierarchy instead:
+
+```sh
+adb shell uiautomator dump /sdcard/ui.xml
+adb shell cat /sdcard/ui.xml | tr '>' '\n' | grep -i "send\|보내기"
+```
+
+Take `bounds="[x1,y1][x2,y2]"` from the matching node and tap its centre —
+this is the moment the message actually goes out:
+
+```sh
+adb shell input tap 1000 2150
+```
+
+### Constraints
+
+- **Screen on and unlocked.** This is UI automation, not an API.
+- **SMS vs RCS is not yours to pick.** Samsung Messages decides per
+  recipient (Chat+/RCS where supported, SMS otherwise); the intent has no
+  knob for it. A thread that lives in `content://im/chat` will go out as RCS.
+- **Confirm before the tap.** Step 1 is reversible; step 2 delivers
+  immediately and cannot be recalled. Show the user the exact recipient and
+  final wording and get an explicit yes before running `input tap`.
+- **Check who owns the SMS role** if the layout in step 2 looks unfamiliar:
+  `adb shell cmd role get-role-holders android.app.role.SMS`.
+
 ## Related: recordings and screenshots
 
 Often wanted in the same session (e.g., analyzing a call the message refers to):
@@ -131,9 +194,10 @@ Often wanted in the same session (e.g., analyzing a call the message refers to):
 - **RCS bodies may be JSON.** Rich cards (banks, brands) arrive as
   `generalPurposeCard` JSON in the `body` column — `LIKE` still works, but
   the human-readable text is inside the `description` field.
-- **Read-only by intent.** Query, don't `content insert/update/delete` —
-  corrupting the messages DB is not recoverable. Treat exported contents as
-  sensitive personal data: keep them local and out of commits/logs.
+- **The message DB is read-only.** Query, don't `content insert/update/
+  delete` — corrupting it is not recoverable, and inserting a row is not
+  sending (see Sending above). Treat exported contents as sensitive personal
+  data: keep them local and out of commits/logs.
 - **Permission denied?** Some builds block shell access to these providers.
   There is no safe workaround via adb alone; fall back to on-phone export or
   Samsung Smart Switch backup parsing.
