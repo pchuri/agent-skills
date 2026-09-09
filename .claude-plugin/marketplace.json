@@ -18,8 +18,8 @@
     {
       "name": "samsung-messages-adb",
       "source": "./plugins/samsung-messages-adb",
-      "description": "Read and search text messages on a Samsung Galaxy over adb — SMS, MMS, and RCS (Chat+) — with the store-split and timestamp-unit gotchas that make messages 'invisible' to naive queries.",
-      "version": "1.0.0",
+      "description": "Read, search, and send text messages on a Samsung Galaxy over adb — SMS, MMS, and RCS (Chat+) — with the store-split, timestamp-unit, and argument-quoting gotchas that make messages 'invisible' to naive queries or silently truncate a send.",
+      "version": "1.1.0",
       "author": {
         "name": "pchuri"
       }
