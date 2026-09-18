@@ -36,6 +36,24 @@
       "author": {
         "name": "pchuri"
       }
+    },
+    {
+      "name": "samsung-call-transcribe",
+      "source": "./plugins/samsung-call-transcribe",
+      "description": "삼성 갤럭시(Android) 휴대폰 통화 녹음 파일을 USB 디버깅(adb)으로 가져와 Whisper로 자동 전사 — M4A to WAV 변환, 타임스탬프 SRT 생성.",
+      "version": "1.0.0",
+      "author": {
+        "name": "pchuri"
+      }
+    },
+    {
+      "name": "kakaotalk-mac",
+      "source": "./plugins/kakaotalk-mac",
+      "description": "macOS 카카오톡 로컬 SQLite DB 조회 (메시지/채팅방/사진) 및 확인 후 발송 (kakaocli 기반).",
+      "version": "1.0.0",
+      "author": {
+        "name": "pchuri"
+      }
     }
   ]
 }

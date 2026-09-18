@@ -1,0 +1,14 @@
+{
+  "name": "kakaotalk-mac",
+  "displayName": "KakaoTalk Mac CLI",
+  "description": "macOS 카카오톡 로컬 SQLite DB 조회 (메시지/채팅방/사진) 및 확인 후 발송. kakaocli 도구를 사용하여 카카오톡 메시지 검색, 조회, 사진 URL 추출 및 다운로드, 메시지 발송 등을 수행합니다.",
+  "version": "1.0.0",
+  "author": {
+    "name": "pchuri",
+    "url": "https://github.com/pchuri"
+  },
+  "homepage": "https://github.com/pchuri/agent-skills",
+  "repository": "https://github.com/pchuri/agent-skills",
+  "license": "MIT",
+  "keywords": ["kakaotalk", "messaging", "macos", "korea"]
+}

@@ -14,6 +14,8 @@ Codex CLI 등 오픈 스킬 표준을 지원하는 모든 AI 코딩 에이전트
 | [android-reverse-tethering](plugins/android-reverse-tethering/skills/android-reverse-tethering/SKILL.md) | Share the PC's internet with an Android phone over USB (reverse tethering via gnirehtet). Setup, start/stop, verification, and troubleshooting. |
 | [samsung-messages-adb](plugins/samsung-messages-adb/skills/samsung-messages-adb/SKILL.md) | Read and search text messages on a Samsung Galaxy over adb — SMS, MMS, and RCS (Chat+). Covers the three separate message stores and the timestamp-unit gotchas that make messages "invisible" to naive queries. |
 | [watchtell](https://github.com/pchuri/watchtell/blob/main/skills/watchtell/SKILL.md) | Hand off long-lived watching to a local daemon — "tell me when this CI goes red", "notify me when this repo publishes a release". Compiles the request into a deterministic bash checker once, then polls LLM-free and alerts only on state transitions. Lives in [its own repo](https://github.com/pchuri/watchtell) alongside the CLI it drives. |
+| [samsung-call-transcribe](plugins/samsung-call-transcribe/skills/samsung-call-transcribe/SKILL.md) | Pull Samsung Galaxy call recordings over adb and transcribe with local Whisper (ggml-large-v3-turbo) via ffmpeg and whisper-cli. Outputs both plain text and timestamped SRT subtitles. |
+| [kakaotalk-mac](plugins/kakaotalk-mac/skills/kakaotalk-mac/SKILL.md) | macOS KakaoTalk local SQLite DB query (messages, chatrooms, photos) and confirmed sending via `kakaocli`. |
 
 ## Install
 
@@ -23,6 +25,8 @@ Codex CLI 등 오픈 스킬 표준을 지원하는 모든 AI 코딩 에이전트
 /plugin marketplace add pchuri/agent-skills
 /plugin install android-reverse-tethering@pchuri-skills
 /plugin install samsung-messages-adb@pchuri-skills
+/plugin install samsung-call-transcribe@pchuri-skills
+/plugin install kakaotalk-mac@pchuri-skills
 /plugin install watchtell@pchuri-skills
 ```
 
