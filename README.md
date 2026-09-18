@@ -4,8 +4,6 @@ A collection of portable [Agent Skills](https://agentskills.io) (`SKILL.md`
 format) that work across AI coding agents — Claude Code, OpenAI Codex CLI,
 and any other tool supporting the open skills standard.
 
-이식 가능한 Agent Skills(`SKILL.md` 표준) 모음입니다. Claude Code, OpenAI
-Codex CLI 등 오픈 스킬 표준을 지원하는 모든 AI 코딩 에이전트에서 동작합니다.
 
 ## Skills
 

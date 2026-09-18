@@ -1,7 +1,7 @@
 {
   "name": "samsung-call-transcribe",
   "displayName": "Samsung Call Transcribe over adb & Whisper",
-  "description": "삼성 갤럭시(Android) 휴대폰에 녹음된 통화 녹음 파일을 USB 디버깅(adb)으로 가져와 Whisper(whisper-cli)로 텍스트로 자동 전사할 때 사용합니다.",
+  "description": "Pull Samsung Galaxy call recording audio files over USB debugging (adb) and transcribe them locally using Whisper (whisper-cli) — includes M4A to WAV conversion and timestamped SRT subtitle generation.",
   "version": "1.0.0",
   "author": {
     "name": "pchuri",

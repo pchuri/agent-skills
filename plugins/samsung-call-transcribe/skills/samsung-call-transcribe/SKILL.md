@@ -1,6 +1,6 @@
 ---
 name: samsung-call-transcribe
-description: 삼성 갤럭시(Android) 휴대폰에 녹음된 통화 녹음 파일을 USB 디버깅(adb)으로 가져와 Whisper(whisper-cli)로 텍스트로 자동 전사할 때 사용한다. 통화 내용 확인, 미팅/상담 요약이 필요할 때 호출한다.
+description: Pull call recordings from a Samsung Galaxy (Android) phone over USB debugging (adb) and transcribe them locally using Whisper (whisper-cli). Use when transcribing phone calls, reviewing discussion contents, or creating meeting notes from call audio.
 version: 1.0.0
 requires:
   binaries:
@@ -15,75 +15,78 @@ tags:
   - android
 ---
 
-# 삼성 통화 녹음 전사 가이드 (`samsung-call-transcribe`)
+# Samsung Call Recording Transcription (`samsung-call-transcribe`)
 
-삼성 갤럭시 휴대폰의 통화 녹음 파일(`/sdcard/Recordings/Call/`)을 adb로 가져와 Whisper로 로컬 전사하는 스킬입니다.
-
----
-
-## 1. 기본 원칙 및 보안
-
-- **읽기 전용 접근**: 휴대폰 내 원본 녹음 파일은 절대 수정하거나 삭제하지 않습니다.
-- **로컬 임시 작업**: 파일은 Git 리포가 아닌 `/tmp` 디렉토리(예: `/tmp/call-transcribe`)로 pull하여 작업합니다.
-- **저장소 커밋 금지**: 사용자가 명시적으로 원본 보관을 요청하지 않는 한, 음성 파일(M4A/WAV) 및 전체 전사 원문은 저장소에 커밋하지 않습니다.
-- **문서 요약 후 정리**: 문서에는 관련 결정·일정·후속 조치만 요약하여 기록하고, 작업이 끝나면 임시 녹음 및 WAV 파일은 삭제합니다.
+Pull call recording audio files (`/sdcard/Recordings/Call/`) from a Samsung Galaxy phone via adb and transcribe them locally using Whisper.
 
 ---
 
-## 2. 작업 절차
+## 1. Core Principles & Privacy
 
-### (1) 휴대폰 연결 및 녹음 파일 조회
+- **Read-only access**: Never modify or delete original recording files on the phone.
+- **Local temporary workspace**: Always pull files to a temporary directory such as `/tmp/call-transcribe`, never inside the git repository.
+- **No media commits**: Do not commit raw audio files (M4A/WAV) or verbatim transcripts to git repositories unless explicitly requested by the user.
+- **Summarize and clean up**: Record only key decisions, dates, and action items in persistent project notes, and delete temporary audio files once finished.
+
+---
+
+## 2. Procedure
+
+### (1) Connect device and list recordings
 
 ```bash
-# 1. 기기 연결 확인
+# 1. Verify device connection
 adb devices -l
 
-# 2. 최근 통화 녹음 목록 확인
+# 2. List recent call recordings
 adb shell ls -l "/sdcard/Recordings/Call/" | tail -n 20
 
-# 3. 특정 날짜 또는 상대방 검색 (예: 20260901)
+# 3. Filter by date or contact name (e.g. 20260901)
 adb shell ls "/sdcard/Recordings/Call/*20260901*"
 ```
 
-### (2) 임시 폴더로 파일 복사 (`adb pull`)
+### (2) Copy file to temporary workspace (`adb pull`)
 
 ```bash
 work_dir="/tmp/call-transcribe"
 mkdir -p "$work_dir"
 
-# 대상 파일 복사
-adb pull "/sdcard/Recordings/Call/<녹음파일명>.m4a" "$work_dir/recording.m4a"
+# Copy target recording
+adb pull "/sdcard/Recordings/Call/<recording_filename>.m4a" "$work_dir/recording.m4a"
 ```
 
-### (3) 오디오 변환 및 Whisper 전사
+### (3) Convert audio and transcribe with Whisper
 
-Whisper 모델은 **`/Users/al03230673/models/whisper/ggml-large-v3-turbo.bin`**을 우선 사용합니다.
+Set the Whisper ggml model path (defaults to `$HOME/models/whisper/ggml-large-v3-turbo.bin` or configure via `WHISPER_MODEL_PATH`):
 
 ```bash
 work_dir="/tmp/call-transcribe"
-model_path="/Users/al03230673/models/whisper/ggml-large-v3-turbo.bin"
+model_path="${WHISPER_MODEL_PATH:-$HOME/models/whisper/ggml-large-v3-turbo.bin}"
 
-# 1. 16kHz 모노 PCM WAV로 변환
+# 1. Convert to 16kHz mono PCM WAV
 ffmpeg -hide_banner -loglevel error -y \
   -i "$work_dir/recording.m4a" -ar 16000 -ac 1 -c:a pcm_s16le \
   "$work_dir/call.wav"
 
-# 2. Whisper 전사 실행 (도메인 특화 키워드를 --prompt에 추가)
+# 2. Run Whisper transcription (add domain keywords to --prompt if needed)
 whisper-cli \
   -m "$model_path" -l ko -otxt -osrt \
   -of "$work_dir/call" \
-  --prompt "인테리어, 시공, 견적, 일정, 학원, 상담" \
+  --prompt "Meeting, discussion, schedule, estimate" \
   "$work_dir/call.wav"
 ```
 
-결과물:
-- `$work_dir/call.txt`: 전체 텍스트 전사본
-- `$work_dir/call.srt`: 타임스탬프가 포함된 자막 파일 (불명확한 구간 확인용)
+Outputs:
+- `$work_dir/call.txt`: Plain text transcript
+- `$work_dir/call.srt`: Timestamped subtitle file (useful for verifying unclear sections)
 
 ---
 
-## 3. 요약 및 검증 팁
+## 3. Verification & Cleanup Tips
 
-- 자동 전사는 불명확한 고유명사나 숫자가 오인될 수 있으므로, 의심스러운 부분은 `.srt` 파일의 타임스탬프를 확인합니다.
-- 통화 후 메신저(카카오톡 등)로 교환된 서면 내용이 있다면 교차 검증합니다.
-- 작업 완료 후 불필요한 대용량 음성 파일은 정리합니다: `rm -f "$work_dir/call.wav" "$work_dir/recording.m4a"`
+- Automatic transcription may mishear proper nouns or numbers. For critical or doubtful details, check the timestamp in the `.srt` file.
+- Cross-reference with written communications (e.g. messenger chats or emails) following the call.
+- Remove temporary large audio files after transcription is completed:
+  ```bash
+  rm -f "$work_dir/call.wav" "$work_dir/recording.m4a"
+  ```
