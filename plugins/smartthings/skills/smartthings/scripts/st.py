@@ -62,8 +62,17 @@ def api_request(path, method="GET", body=None):
 
 
 def get_devices():
-    res = api_request("/devices")
-    return res.get("items", [])
+    devices = []
+    path = "/devices"
+    while path:
+        res = api_request(path)
+        devices.extend(res.get("items", []))
+        next_link = (res.get("_links") or {}).get("next", {}).get("href")
+        if next_link:
+            path = next_link.replace(API_BASE, "")
+        else:
+            path = None
+    return devices
 
 
 def resolve_device_id(identifier):
@@ -158,8 +167,15 @@ def cmd_status(args):
         print(json.dumps(res, indent=2, ensure_ascii=False))
         return
 
-    print(f"Device: {dev_name} ({dev_id})")
     components = res.get("components", {})
+    health = components.get("main", {}).get("healthCheck", {})
+    health_status = (
+        health.get("DeviceWatch-DeviceStatus", {}).get("value")
+        or health.get("healthStatus", {}).get("value")
+        or "unknown"
+    )
+
+    print(f"Device: {dev_name} ({dev_id}) [Health: {health_status.upper()}]")
     for comp_name, comp_data in components.items():
         if len(components) > 1:
             print(f"  [Component: {comp_name}]")
