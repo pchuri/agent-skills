@@ -54,6 +54,15 @@
       "author": {
         "name": "pchuri"
       }
+    },
+    {
+      "name": "smartthings",
+      "source": "./plugins/smartthings",
+      "description": "Query and control Samsung SmartThings devices (lights, plugs, AC/climate, appliances, sensors) via the official REST API using a Personal Access Token.",
+      "version": "1.0.0",
+      "author": {
+        "name": "pchuri"
+      }
     }
   ]
 }
