@@ -1,0 +1,14 @@
+{
+  "name": "smartthings",
+  "displayName": "SmartThings REST API",
+  "description": "Interact with Samsung SmartThings devices (lights, plugs, AC/climate, sensors) via the official REST API using a Personal Access Token — list devices, inspect real-time status, and dispatch capability commands.",
+  "version": "1.0.0",
+  "author": {
+    "name": "pchuri",
+    "url": "https://github.com/pchuri"
+  },
+  "homepage": "https://github.com/pchuri/agent-skills",
+  "repository": "https://github.com/pchuri/agent-skills",
+  "license": "MIT",
+  "keywords": ["smartthings", "samsung", "iot", "smart-home", "home-automation", "rest-api"]
+}

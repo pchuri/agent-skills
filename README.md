@@ -14,6 +14,7 @@ and any other tool supporting the open skills standard.
 | [watchtell](https://github.com/pchuri/watchtell/blob/main/skills/watchtell/SKILL.md) | Hand off long-lived watching to a local daemon — "tell me when this CI goes red", "notify me when this repo publishes a release". Compiles the request into a deterministic bash checker once, then polls LLM-free and alerts only on state transitions. Lives in [its own repo](https://github.com/pchuri/watchtell) alongside the CLI it drives. |
 | [samsung-call-transcribe](plugins/samsung-call-transcribe/skills/samsung-call-transcribe/SKILL.md) | Pull Samsung Galaxy call recordings over adb and transcribe with local Whisper (ggml-large-v3-turbo) via ffmpeg and whisper-cli. Outputs both plain text and timestamped SRT subtitles. |
 | [kakaotalk-mac](plugins/kakaotalk-mac/skills/kakaotalk-mac/SKILL.md) | macOS KakaoTalk local SQLite DB query (messages, chatrooms, photos) and confirmed sending via `kakaocli`. |
+| [smartthings](plugins/smartthings/skills/smartthings/SKILL.md) | Query and control Samsung SmartThings devices (lights, plugs, AC, appliances, sensors) via the official REST API using a Personal Access Token. |
 
 ## Install
 
@@ -25,6 +26,7 @@ and any other tool supporting the open skills standard.
 /plugin install samsung-messages-adb@pchuri-skills
 /plugin install samsung-call-transcribe@pchuri-skills
 /plugin install kakaotalk-mac@pchuri-skills
+/plugin install smartthings@pchuri-skills
 /plugin install watchtell@pchuri-skills
 ```
 
@@ -98,6 +100,12 @@ The agent hands the watch off to the watchtell daemon: the request is
 compiled into a bash checker once, the daemon keeps polling it after your
 session ends, and you get notified on the ok→failing transition — not on
 every poll.
+
+> "Turn off the bed light and set the living room AC to 24°C."
+
+The agent queries device IDs by label using the SmartThings REST API, checks
+their current status, and dispatches capability commands (`switch: off`,
+`thermostatCoolingSetpoint: 24.0`).
 
 ## License
 
