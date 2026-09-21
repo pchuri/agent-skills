@@ -19,17 +19,49 @@ import urllib.request
 API_BASE = "https://api.smartthings.com/v1"
 
 
+def get_cli_token():
+    """Retrieve active OAuth access token from official SmartThings CLI credentials."""
+    paths = [
+        os.path.expanduser("~/Library/Application Support/@smartthings/cli/credentials.json"),
+        os.path.join(
+            os.environ.get("XDG_CONFIG_HOME") or os.path.expanduser("~/.config"),
+            "@smartthings",
+            "cli",
+            "credentials.json",
+        ),
+    ]
+    for p in paths:
+        if os.path.exists(p):
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                for val in data.values():
+                    if isinstance(val, dict) and "accessToken" in val:
+                        return val["accessToken"]
+            except Exception:
+                continue
+    return None
+
+
 def get_token():
+    # 1. Prefer explicitly configured environment variable
     token = os.environ.get("SMARTTHINGS_API_TOKEN") or os.environ.get("SMARTTHINGS_TOKEN")
-    if not token:
-        sys.stderr.write(
-            "Error: SMARTTHINGS_API_TOKEN or SMARTTHINGS_TOKEN environment variable is required.\n"
-        )
-        sys.exit(1)
-    return token.strip()
+    if token and token.strip():
+        return token.strip()
+
+    # 2. Fallback to official CLI OAuth credentials
+    cli_token = get_cli_token()
+    if cli_token:
+        return cli_token
+
+    sys.stderr.write(
+        "Error: SMARTTHINGS_API_TOKEN or SMARTTHINGS_TOKEN environment variable is required,\n"
+        "or authenticate via official CLI (`smartthings devices`).\n"
+    )
+    sys.exit(1)
 
 
-def api_request(path, method="GET", body=None):
+def api_request(path, method="GET", body=None, retry_with_cli=True):
     token = get_token()
     url = f"{API_BASE}{path}" if path.startswith("/") else f"{API_BASE}/{path}"
 
@@ -48,6 +80,13 @@ def api_request(path, method="GET", body=None):
             content = resp.read().decode("utf-8")
             return json.loads(content) if content else {}
     except urllib.error.HTTPError as e:
+        # If env token expired (401), attempt fallback to CLI credentials
+        if e.code == 401 and retry_with_cli:
+            cli_token = get_cli_token()
+            if cli_token and cli_token != token:
+                os.environ["SMARTTHINGS_API_TOKEN"] = cli_token
+                return api_request(path, method=method, body=body, retry_with_cli=False)
+
         err_body = e.read().decode("utf-8")
         try:
             err_json = json.loads(err_body)
