@@ -14,7 +14,7 @@ and any other tool supporting the open skills standard.
 | [watchtell](https://github.com/pchuri/watchtell/blob/main/skills/watchtell/SKILL.md) | Hand off long-lived watching to a local daemon — "tell me when this CI goes red", "notify me when this repo publishes a release". Compiles the request into a deterministic bash checker once, then polls LLM-free and alerts only on state transitions. Lives in [its own repo](https://github.com/pchuri/watchtell) alongside the CLI it drives. |
 | [samsung-call-transcribe](plugins/samsung-call-transcribe/skills/samsung-call-transcribe/SKILL.md) | Pull Samsung Galaxy call recordings over adb and transcribe with local Whisper (ggml-large-v3-turbo) via ffmpeg and whisper-cli. Outputs both plain text and timestamped SRT subtitles. |
 | [kakaotalk-mac](plugins/kakaotalk-mac/skills/kakaotalk-mac/SKILL.md) | macOS KakaoTalk local SQLite DB query (messages, chatrooms, photos) and confirmed sending via `kakaocli`. |
-| [smartthings](plugins/smartthings/skills/smartthings/SKILL.md) | Query and control Samsung SmartThings devices (lights, plugs, AC, appliances, sensors) via the official REST API using a Personal Access Token. |
+| [smartthings](plugins/smartthings/skills/smartthings/SKILL.md) | Query and control Samsung SmartThings devices (lights, plugs, AC, appliances, sensors) via the official CLI or REST API with persistent OAuth sessions. |
 
 ## Install
 

@@ -1,8 +1,8 @@
 {
   "name": "smartthings",
-  "displayName": "SmartThings REST API",
-  "description": "Interact with Samsung SmartThings devices (lights, plugs, AC/climate, sensors) via the official REST API using a Personal Access Token — list devices, inspect real-time status, and dispatch capability commands.",
-  "version": "1.0.0",
+  "displayName": "SmartThings CLI & REST API",
+  "description": "Interact with Samsung SmartThings devices (lights, plugs, AC/climate, sensors) via the official CLI and REST API with persistent OAuth sessions or Personal Access Tokens — list devices, inspect real-time status, and dispatch capability commands.",
+  "version": "1.1.0",
   "author": {
     "name": "pchuri",
     "url": "https://github.com/pchuri"
