@@ -63,6 +63,15 @@
       "author": {
         "name": "pchuri"
       }
+    },
+    {
+      "name": "muse-usage",
+      "source": "./plugins/muse-usage",
+      "description": "Check Meta Muse Code CLI token/subscription usage and rate limit status via interactive TUI automation.",
+      "version": "1.0.0",
+      "author": {
+        "name": "pchuri"
+      }
     }
   ]
 }

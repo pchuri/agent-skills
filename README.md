@@ -15,6 +15,7 @@ and any other tool supporting the open skills standard.
 | [samsung-call-transcribe](plugins/samsung-call-transcribe/skills/samsung-call-transcribe/SKILL.md) | Pull Samsung Galaxy call recordings over adb and transcribe with local Whisper (ggml-large-v3-turbo) via ffmpeg and whisper-cli. Outputs both plain text and timestamped SRT subtitles. |
 | [kakaotalk-mac](plugins/kakaotalk-mac/skills/kakaotalk-mac/SKILL.md) | macOS KakaoTalk local SQLite DB query (messages, chatrooms, photos) and confirmed sending via `kakaocli`. |
 | [smartthings](plugins/smartthings/skills/smartthings/SKILL.md) | Query and control Samsung SmartThings devices (lights, plugs, AC, appliances, sensors) via the official CLI or REST API with persistent OAuth sessions. |
+| [muse-usage](plugins/muse-usage/skills/muse-usage/SKILL.md) | Inspect Meta Muse Code CLI token and subscription quota usage limits via automated PTY execution. |
 
 ## Install
 
@@ -27,6 +28,7 @@ and any other tool supporting the open skills standard.
 /plugin install samsung-call-transcribe@pchuri-skills
 /plugin install kakaotalk-mac@pchuri-skills
 /plugin install smartthings@pchuri-skills
+/plugin install muse-usage@pchuri-skills
 /plugin install watchtell@pchuri-skills
 ```
 

@@ -1,0 +1,14 @@
+{
+  "name": "muse-usage",
+  "displayName": "Meta Muse Code CLI Usage Checker",
+  "description": "Check Meta Muse Code CLI token/subscription usage and rate limit status via interactive TUI automation.",
+  "version": "1.0.0",
+  "author": {
+    "name": "pchuri",
+    "url": "https://github.com/pchuri"
+  },
+  "homepage": "https://github.com/pchuri/agent-skills",
+  "repository": "https://github.com/pchuri/agent-skills",
+  "license": "MIT",
+  "keywords": ["muse", "meta", "cli", "usage", "subscription", "rate-limit"]
+}
