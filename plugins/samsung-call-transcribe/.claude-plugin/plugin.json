@@ -1,8 +1,8 @@
 {
   "name": "samsung-call-transcribe",
-  "displayName": "Samsung Call Transcribe over adb & Whisper",
-  "description": "Pull Samsung Galaxy call recording audio files over USB debugging (adb) and transcribe them locally using Whisper (whisper-cli) — includes M4A to WAV conversion and timestamped SRT subtitle generation.",
-  "version": "1.0.0",
+  "displayName": "Samsung Call Transcribe over adb",
+  "description": "Pull Samsung Galaxy call recording audio files over USB debugging (adb) and transcribe them using native multimodal audio listening (recommended) or local Whisper (whisper-cli fallback).",
+  "version": "1.1.0",
   "author": {
     "name": "pchuri",
     "url": "https://github.com/pchuri"
@@ -10,5 +10,5 @@
   "homepage": "https://github.com/pchuri/agent-skills",
   "repository": "https://github.com/pchuri/agent-skills",
   "license": "MIT",
-  "keywords": ["android", "samsung", "call", "recording", "whisper", "transcription", "adb"]
+  "keywords": ["android", "samsung", "call", "recording", "multimodal", "whisper", "transcription", "adb"]
 }
