@@ -1,15 +1,14 @@
 ---
 name: samsung-call-transcribe
-description: Pull call recordings from a Samsung Galaxy (Android) phone over USB debugging (adb) and transcribe them locally using Whisper (whisper-cli). Use when transcribing phone calls, reviewing discussion contents, or creating meeting notes from call audio.
-version: 1.0.0
+description: Pull call recordings from a Samsung Galaxy (Android) phone over USB debugging (adb) and transcribe them using native multimodal audio listening (recommended) or local Whisper (whisper-cli fallback). Use when transcribing phone calls, reviewing discussion contents, or creating meeting notes from call audio.
+version: 1.1.0
 requires:
   binaries:
     - adb
-    - ffmpeg
-    - whisper-cli
 tags:
   - audio
   - transcription
+  - multimodal
   - whisper
   - samsung
   - android
@@ -17,7 +16,7 @@ tags:
 
 # Samsung Call Recording Transcription (`samsung-call-transcribe`)
 
-Pull call recording audio files (`/sdcard/Recordings/Call/`) from a Samsung Galaxy phone via adb and transcribe them locally using Whisper.
+Pull call recording audio files (`/sdcard/Recordings/Call/`) from a Samsung Galaxy phone via adb and transcribe them using native multimodal audio listening (recommended) or local Whisper (`whisper-cli` fallback).
 
 ---
 
@@ -41,8 +40,8 @@ adb devices -l
 # 2. List recent call recordings
 adb shell ls -l "/sdcard/Recordings/Call/" | tail -n 20
 
-# 3. Filter by date or contact name (e.g. 20260901)
-adb shell ls "/sdcard/Recordings/Call/*20260901*"
+# 3. Filter by date or contact name (e.g. 20261006)
+adb shell ls "/sdcard/Recordings/Call/*20261006*"
 ```
 
 ### (2) Copy file to temporary workspace (`adb pull`)
@@ -55,7 +54,23 @@ mkdir -p "$work_dir"
 adb pull "/sdcard/Recordings/Call/<recording_filename>.m4a" "$work_dir/recording.m4a"
 ```
 
-### (3) Convert audio and transcribe with Whisper
+### (3) Transcribe Audio
+
+Choose the appropriate transcription method based on the agent's capabilities:
+
+#### Method A: Direct Multimodal Audio Listening (Recommended)
+
+If the current coding assistant/agent supports native multimodal audio inputs (e.g., Google Antigravity / Gemini models):
+
+1. **Pass the audio directly to the agent**: Provide the pulled audio path (`/tmp/call-transcribe/recording.m4a`) to the multimodal agent or attach the clip to the session.
+2. **Advantages**:
+   - **Context-aware recognition**: Accurately recognizes proper nouns, personal names, educational institutions, and domain terms without phonetic distortion.
+   - **Speaker diarization**: Automatically distinguishes between speakers (e.g., caller vs. receiver) based on vocal pitch, tone, and dialogue dynamics.
+   - **End-to-end synthesis**: Transcribes, verifies facts, extracts action items, and generates structured meeting notes in a single step without intermediate STT noise.
+
+#### Method B: Local Whisper Fallback (`whisper-cli`)
+
+For text-only CLI agents or fully offline environments without multimodal audio support:
 
 Set the Whisper ggml model path (defaults to `$HOME/models/whisper/ggml-large-v3-turbo.bin` or configure via `WHISPER_MODEL_PATH`):
 
@@ -84,9 +99,8 @@ Outputs:
 
 ## 3. Verification & Cleanup Tips
 
-- Automatic transcription may mishear proper nouns or numbers. For critical or doubtful details, check the timestamp in the `.srt` file.
-- Cross-reference with written communications (e.g. messenger chats or emails) following the call.
+- When using Whisper, automatic transcription may mishear proper nouns or numbers. Cross-reference with chat messages or have a multimodal model listen to the audio directly.
 - Remove temporary large audio files after transcription is completed:
   ```bash
-  rm -f "$work_dir/call.wav" "$work_dir/recording.m4a"
+  rm -rf "$work_dir"
   ```
