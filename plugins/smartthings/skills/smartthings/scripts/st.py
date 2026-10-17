@@ -114,31 +114,46 @@ def get_devices():
     return devices
 
 
+def _describe_matches(matches):
+    return ", ".join(f"'{m.get('label') or m.get('name')}' ({m.get('deviceId')})" for m in matches)
+
+
 def resolve_device_id(identifier):
-    """Resolve a device ID directly or by partial case-insensitive label/name match."""
+    """Resolve a device ID directly or by partial case-insensitive label/name match.
+
+    An exact device ID always wins. An exact label shared by several devices is
+    rejected as ambiguous instead of picking one, so the caller must pass a
+    device ID to target a specific physical device.
+    """
     devices = get_devices()
     # Check exact deviceId match
     for d in devices:
         if d.get("deviceId") == identifier:
             return d["deviceId"], d.get("label") or d.get("name")
 
+    needle = identifier.lower()
+
     # Check exact label match
-    for d in devices:
-        label = d.get("label", "")
-        if label.lower() == identifier.lower():
-            return d["deviceId"], label
+    exact = [d for d in devices if d.get("label") and d["label"].lower() == needle]
+    if len(exact) == 1:
+        return exact[0]["deviceId"], exact[0]["label"]
+    if len(exact) > 1:
+        sys.stderr.write(
+            f"Ambiguous device label '{identifier}': {len(exact)} devices share this label. "
+            f"Matches: {_describe_matches(exact)}. Use the device ID instead.\n"
+        )
+        sys.exit(1)
 
     # Check substring match
     matches = [
         d for d in devices
-        if identifier.lower() in d.get("label", "").lower()
-        or identifier.lower() in d.get("name", "").lower()
+        if needle in (d.get("label") or "").lower()
+        or needle in (d.get("name") or "").lower()
     ]
     if len(matches) == 1:
         return matches[0]["deviceId"], matches[0].get("label") or matches[0].get("name")
     elif len(matches) > 1:
-        matched_names = ", ".join(f"'{m.get('label') or m.get('name')}' ({m['deviceId']})" for m in matches)
-        sys.stderr.write(f"Ambiguous device identifier '{identifier}'. Matches: {matched_names}\n")
+        sys.stderr.write(f"Ambiguous device identifier '{identifier}'. Matches: {_describe_matches(matches)}\n")
         sys.exit(1)
 
     sys.stderr.write(f"Device '{identifier}' not found.\n")
